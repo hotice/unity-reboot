@@ -1,0 +1,74 @@
+#!/bin/bash
+
+if [[ ! -e ~/.config/unity-reboot/settings ]]; then
+	mkdir -p ~/.config/unity-reboot
+	echo "no-password-prompt = FALSE" > ~/.config/unity-reboot/settings
+fi
+
+mkdir -p ~/.local/share/applications
+grep menuentry /boot/grub/grub.cfg >> /tmp/.ur_bootlist
+grep "^menuentry" /tmp/.ur_bootlist | sed -e 's/.*Memory test.*//g' -e "s/menuentry '//g" -e 's/ --class.*//g' -e "s/'//g" -e '/^$/d' > /tmp/.ur_bootlist2
+rm -rf "/tmp/.ur_bootlist" "/tmp/.ur_bootlistformatted" "/tmp/.ur_rebootshortcuts"
+
+BOOTLISTNRS=$(cat /tmp/.ur_bootlist2 | wc -l)
+
+n=1
+while [ $n -le $BOOTLISTNRS ];
+do
+echo Reboot$n\; | tee -a /tmp/.ur_rebootshortcuts
+n=$(( n+1 ))
+done
+
+awk '{ printf "%s", $0 }' /tmp/.ur_rebootshortcuts > /tmp/.ur_rebootshortcuts2
+rm -rf "/tmp/.ur_rebootshortcuts"
+cp /tmp/.ur_rebootshortcuts2 /tmp/.ur_rebootshortcuts
+
+SHORTCUTS=$(cat /tmp/.ur_rebootshortcuts)
+
+echo "[Desktop Entry]
+Version=1.0
+Name=Reboot in...
+Comment=Reboot in...
+GenericName=Reboot in...
+Exec=notify-send --icon=rotate 'Unity Reboot' 'Left click doesnt do anything. Right click the launcher icon and select the entry corresponding to the OS you want to reboot to.'
+Icon=rotate
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Categories=GNOME;System;
+X-Ayatana-Desktop-Shortcuts=$SHORTCUTS;Reboot99;" | tee ~/.local/share/applications/unity-reboot.desktop
+
+current_noaskforpassword=`grep "no-password-prompt = " ~/.config/unity-reboot/settings | sed -e 's/no-password-prompt = //g'`
+
+if [[ $current_noaskforpassword == "TRUE" ]]; then
+	n=1
+	while [ $n -le $BOOTLISTNRS ];
+	do
+	MENUENTRY=$(sed -n "$n{p;q;}" /tmp/.ur_bootlist2)
+	echo "[Reboot$n Shortcut Group]
+	Name=$MENUENTRY
+	Exec=sh -c 'echo "\"$MENUENTRY\"" > /tmp/.rboot; reboot-command && dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.RequestReboot' 
+	TargetEnvironment=Unity" | tee -a ~/.local/share/applications/unity-reboot.desktop
+	n=$(( n+1 ))
+	done
+	rm /tmp/.ur_* > /dev/null 2>&1
+else
+	n=1
+	while [ $n -le $BOOTLISTNRS ];
+	do
+	MENUENTRY=$(sed -n "$n{p;q;}" /tmp/.ur_bootlist2)
+	echo "[Reboot$n Shortcut Group]
+	Name=$MENUENTRY
+	Exec=sh -c 'echo "\"$MENUENTRY\"" > /tmp/.rboot; reboot-command && dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.RequestReboot'
+	TargetEnvironment=Unity" | tee -a ~/.local/share/applications/unity-reboot.desktop
+	n=$(( n+1 ))
+	done
+	rm /tmp/.ur_* > /dev/null 2>&1
+fi
+
+echo "[Reboot99 Shortcut Group]
+	Name=Settings
+	Exec=unity-reboot-settings
+	TargetEnvironment=Unity" | tee -a ~/.local/share/applications/unity-reboot.desktop
+
+chmod +x ~/.local/share/applications/unity-reboot.desktop

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ -e /etc/default/grub ]]; then
+	cp /etc/default/grub /etc/default/grub_backup
+	sed -i 's/GRUB_DEFAULT.*/GRUB_DEFAULT=saved/' /etc/default/grub
+	sed -i 's/#GRUB_DEFAULT.*/GRUB_DEFAULT=saved/' /etc/default/grub
+	update-grub
+fi
+
+#DEBHELPER#
+
+exit 0
+
+# vim: ts=2 sw=2

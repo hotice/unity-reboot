@@ -1,0 +1,9 @@
+#!/bin/bash
+
+current_noaskforpassword=`grep "no-password-prompt = " ~/.config/unity-reboot/settings | sed -e 's/no-password-prompt = //g'`
+
+if [[ $current_noaskforpassword == "TRUE" ]]; then
+	grub-reboot "$(cat /tmp/.rboot)"
+else
+	pkexec grub-reboot "$(cat /tmp/.rboot)"
+fi

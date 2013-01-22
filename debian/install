@@ -1,0 +1,5 @@
+unity-reboot /usr/bin/
+unity-reboot-settings /usr/bin/
+reboot-command /usr/bin/
+autostart/unity-reboot.desktop /etc/xdg/autostart/
+org.freedesktop.pkexec.unity-reboot.policy /usr/share/polkit-1/actions/

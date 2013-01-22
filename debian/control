@@ -1,0 +1,12 @@
+Source: unity-reboot
+Section: misc
+Priority: extra
+Maintainer: Alin Andrei <webupd8@gmail.com>
+Build-Depends: debhelper, cdbs
+Standards-Version: 3.9.3
+
+Package: unity-reboot
+Architecture: all
+Depends: ${shlibs:Depends}, bash, yad (>= 0.12.0), libnotify-bin, gksu
+Description: Unity Reboot
+ An Unity Launcher icon for quickly rebooting the computer in other operating systems such as Microsoft Windows or other Linux distributions.

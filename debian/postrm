@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ -e /etc/default/grub ]]; then
+	if [[ `grep "GRUB_DEFAULT=saved" /etc/default/grub` ]]; then
+		sed -i 's/GRUB_DEFAULT=saved/GRUB_DEFAULT=0/' /etc/default/grub
+		update-grub
+	fi
+fi
+
+#DEBHELPER#
+
+exit 0
+
+# vim: ts=2 sw=2

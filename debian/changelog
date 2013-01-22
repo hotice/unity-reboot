@@ -1,0 +1,28 @@
+unity-reboot (0.2-1~webupd8~qr) quantal; urgency=medium
+ 
+  * Update for new GRUB 2.0 stable menu list (with submenus) - only display the main menu entry
+  * use pkexec for the grub-reboot command (but continue to use gksu for applying the settings - this way, if someone is using a DE that doesn't properly support pkexec can set Unity Reboot to reboot without entering a password (and thus, without pkexec)
+  * some code cleaning
+  * added postrm script to reset GRUB settings after removing unity-reboot
+  * make desktop file executable or else it can't be dragged to the Ubuntu 13.04 launcher (maybe for 12.10 too?)
+  * added gksu, bash as dependencies
+ 
+ -- Alin Andrei <webupd8@gmail.com>  Tue, 22 Jan 2013 12:46:32 +0300
+
+unity-reboot (0.1.1-1~webupd8~oneiric) oneiric; urgency=medium
+ 
+  * minor tweak
+ 
+ -- Alin Andrei <webupd8@gmail.com>  Wed, 14 Sep 2011 12:46:32 +0300
+ 
+unity-reboot (0.1-1~webupd8~natty) natty; urgency=medium
+ 
+  * initial PPA upload
+ 
+ -- Alin Andrei <webupd8@gmail.com>  Tue, 13 Sep 2011 21:25:10 +0300
+ 
+unity-reboot (0.1-1~webupd8~natty) natty; urgency=medium
+ 
+  * initial release
+ 
+ -- Alin Andrei <webupd8@gmail.com>  Wed, 07 Sep 2011 12:39:12 +0300

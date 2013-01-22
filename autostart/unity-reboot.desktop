@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Unity Reboot
+Comment=Reboot to a different OS
+Icon=rotate
+Exec=unity-reboot
+Terminal=false
+Type=Application
+StartupNotify=false

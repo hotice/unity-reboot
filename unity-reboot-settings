@@ -1,0 +1,25 @@
+#!/bin/bash
+
+current_noaskforpassword=`grep "no-password-prompt = " ~/.config/unity-reboot/settings | sed -e 's/no-password-prompt = //g'`
+
+
+R_SETTINGS=`yad --form --class="Unity-Reboot" --name="Unity-Reboot" --field="Don't ask for password on restart:CHK" "$current_noaskforpassword" --text="   Warning - enabling this will allow /usr/bin/grub-editenv to be executed by any user:   " --button="gtk-cancel:1" --button="Apply:0"`
+
+ret=$?
+
+if [[ $ret -eq 0 ]]; then
+	R_password=`echo "$R_SETTINGS" | cut -d '|' -f1`
+	sed -i "s/no-password-prompt = .*/no-password-prompt = $R_password/g" ~/.config/unity-reboot/settings
+
+	if [[ "$R_password" == "TRUE" ]]; then
+		gksu -- sh -c 'chmod +s /usr/bin/grub-editenv'
+	else
+		gksu -- sh -c 'chmod -s /usr/bin/grub-editenv'
+	fi
+
+	unity-reboot
+
+else
+	exit
+
+fi
